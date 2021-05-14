@@ -38,16 +38,12 @@ public enum LineDelimiter {
      * @return the enum representation of the given string.
      */
     public static LineDelimiter of(final String str) {
-        if ("\r\n".equals(str)) {
-            return CRLF;
-        }
-        if ("\n".equals(str)) {
-            return LF;
-        }
-        if ("\r".equals(str)) {
-            return CR;
-        }
-        throw new IllegalArgumentException("Unknown line delimiter: " + str);
+        return switch (str) {
+            case "\r\n" -> CRLF;
+            case "\n" -> LF;
+            case "\r" -> CR;
+            default -> throw new IllegalArgumentException("Unknown line delimiter: " + str);
+        };
     }
 
     @Override
