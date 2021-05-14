@@ -2,38 +2,35 @@ package de.siegmar.fastcsv.reader;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
-import java.util.StringJoiner;
 
 /**
  * Name (header) based CSV-row.
+ *
+ * @param originalLineNumber the original line number (starting with 1). On multi-line rows this is the starting
+ *                           line number. Empty lines (and maybe commented lines) have been skipped.
+ * @param fields             an unmodifiable map of header names and field values of this row.
+ *                           The map will always contain all header names - even if their value is {@code null}.
  */
-public final class NamedCsvRow {
-
-    private final long originalLineNumber;
-    private final Map<String, String> fieldMap;
+public final record NamedCsvRow(long originalLineNumber,
+                                Map<String, String> fields) {
 
     NamedCsvRow(final Set<String> header, final CsvRow row) {
-        this.originalLineNumber = row.getOriginalLineNumber();
-
-        fieldMap = new LinkedHashMap<>(header.size());
-        int i = 0;
-        for (final String h : header) {
-            fieldMap.put(h, row.getField(i++));
-        }
+        this(row.originalLineNumber(), build(header, row));
     }
 
-    /**
-     * Returns the original line number (starting with 1). On multi-line rows this is the starting
-     * line number.
-     * Empty lines (and maybe commented lines) have been skipped.
-     *
-     * @return the original line number
-     */
-    public long getOriginalLineNumber() {
-        return originalLineNumber;
+    private static Map<String, String> build(final Set<String> header, final CsvRow row) {
+        final Map<String, String> fieldMap = new LinkedHashMap<>(header.size());
+        int i = 0;
+        final List<String> fields = row.fields();
+        for (final String h : header) {
+            final int index = i++;
+            fieldMap.put(h, fields.get(index));
+        }
+        return Collections.unmodifiableMap(fieldMap);
     }
 
     /**
@@ -43,32 +40,13 @@ public final class NamedCsvRow {
      * @return field value, never {@code null}
      * @throws NoSuchElementException if this row has no such field
      */
-    public String getField(final String name) {
-        final String val = fieldMap.get(name);
+    public String field(final String name) {
+        final String val = fields.get(name);
         if (val == null) {
             throw new NoSuchElementException("No element with name '" + name + "' found. "
-                + "Valid names are: " + fieldMap.keySet());
+                + "Valid names are: " + fields.keySet());
         }
         return val;
-    }
-
-    /**
-     * Gets an unmodifiable map of header names and field values of this row.
-     * <p>
-     * The map will always contain all header names - even if their value is {@code null}.
-     *
-     * @return an unmodifiable map of header names and field values of this row
-     */
-    public Map<String, String> getFields() {
-        return Collections.unmodifiableMap(fieldMap);
-    }
-
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", NamedCsvRow.class.getSimpleName() + "[", "]")
-            .add("originalLineNumber=" + originalLineNumber)
-            .add("fieldMap=" + fieldMap)
-            .toString();
     }
 
 }

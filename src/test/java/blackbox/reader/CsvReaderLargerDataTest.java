@@ -32,13 +32,13 @@ public class CsvReaderLargerDataTest {
         final CsvReader reader = CsvReader.builder().build(createSampleCSV());
         int i = 0;
         for (final CsvRow row : reader) {
-            assertEquals(6, row.getFieldCount());
-            assertEquals(TEXTS[0], row.getField(0));
-            assertEquals(TEXTS[1], row.getField(1));
-            assertEquals(TEXTS[2], row.getField(2));
-            assertEquals(TEXTS[3], row.getField(3));
-            assertEquals(TEXTS[4], row.getField(4));
-            assertEquals(TEXTS[5], row.getField(5));
+            assertEquals(6, row.fieldCount());
+            assertEquals(TEXTS[0], row.field(0));
+            assertEquals(TEXTS[1], row.field(1));
+            assertEquals(TEXTS[2], row.field(2));
+            assertEquals(TEXTS[3], row.field(3));
+            assertEquals(TEXTS[4], row.field(4));
+            assertEquals(TEXTS[5], row.field(5));
             i++;
         }
         assertEquals(1000, i);

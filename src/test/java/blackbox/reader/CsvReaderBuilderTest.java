@@ -42,22 +42,22 @@ public class CsvReaderBuilderTest {
     public void fieldSeparator() {
         final Iterator<CsvRow> it = crb.fieldSeparator(';')
             .build("foo,bar;baz").iterator();
-        assertEquals(Arrays.asList("foo,bar", "baz"), it.next().getFields());
+        assertEquals(Arrays.asList("foo,bar", "baz"), it.next().fields());
     }
 
     @Test
     public void quoteCharacter() {
         final Iterator<CsvRow> it = crb.quoteCharacter('_')
             .build("_foo \", __ bar_,foo \" bar").iterator();
-        assertEquals(Arrays.asList("foo \", _ bar", "foo \" bar"), it.next().getFields());
+        assertEquals(Arrays.asList("foo \", _ bar", "foo \" bar"), it.next().fields());
     }
 
     @Test
     public void commentSkip() {
         final Iterator<CsvRow> it = crb.commentCharacter(';').commentStrategy(CommentStrategy.SKIP)
             .build("#foo\n;bar\nbaz").iterator();
-        assertEquals(Collections.singletonList("#foo"), it.next().getFields());
-        assertEquals(Collections.singletonList("baz"), it.next().getFields());
+        assertEquals(Collections.singletonList("#foo"), it.next().fields());
+        assertEquals(Collections.singletonList("baz"), it.next().fields());
     }
 
     @Test
@@ -72,27 +72,27 @@ public class CsvReaderBuilderTest {
         final List<CsvRow> list = crb
             .build(DATA).stream()
             .collect(Collectors.toList());
-        assertEquals(EXPECTED, list.get(0).getFields());
+        assertEquals(EXPECTED, list.get(0).fields());
     }
 
     @Test
     public void string() {
         final List<CsvRow> list = crb.build(DATA).stream()
             .collect(Collectors.toList());
-        assertEquals(EXPECTED, list.get(0).getFields());
+        assertEquals(EXPECTED, list.get(0).fields());
     }
 
     @Test
     public void path(@TempDir final Path tempDir) throws IOException {
         final Path file = tempDir.resolve("fastcsv.csv");
-        Files.write(file, DATA.getBytes(UTF_8));
+        Files.writeString(file, DATA);
 
         final List<CsvRow> list;
         try (Stream<CsvRow> stream = crb.build(file, UTF_8).stream()) {
             list = stream.collect(Collectors.toList());
         }
 
-        assertEquals(EXPECTED, list.get(0).getFields());
+        assertEquals(EXPECTED, list.get(0).fields());
     }
 
     @Test

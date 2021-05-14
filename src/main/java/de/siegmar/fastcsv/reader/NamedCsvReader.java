@@ -47,8 +47,8 @@ public final class NamedCsvReader implements Iterable<NamedCsvRow>, Closeable {
         } else {
             final CsvRow firstRow = csvIterator.next();
 
-            final Set<String> headerSet = new LinkedHashSet<>(firstRow.getFieldCount());
-            for (final String field : firstRow.getFields()) {
+            final Set<String> headerSet = new LinkedHashSet<>(firstRow.fields().size());
+            for (final String field : firstRow.fields()) {
                 if (!headerSet.add(field)) {
                     throw new IllegalStateException("Duplicate header field '" + field + "' found");
                 }

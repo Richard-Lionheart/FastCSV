@@ -32,7 +32,7 @@ public class CsvReaderExample {
     private static void simple() {
         System.out.print("For-Each loop: ");
         for (final CsvRow csvRow : CsvReader.builder().build("foo,bar")) {
-            System.out.println(csvRow.getFields());
+            System.out.println(csvRow.fields());
         }
     }
 
@@ -53,7 +53,7 @@ public class CsvReaderExample {
             .build("foo,bar\nfoo2,bar2").iterator(); iterator.hasNext();) {
 
             final CsvRow csvRow = iterator.next();
-            System.out.print(csvRow.getFields());
+            System.out.print(csvRow.fields());
             if (iterator.hasNext()) {
                 System.out.print(" || ");
             } else {
@@ -67,7 +67,7 @@ public class CsvReaderExample {
             .build("header1,header2\nvalue1,value2")
             .stream().findFirst();
 
-        first.ifPresent(row -> System.out.println("Header/Name based: " + row.getField("header2")));
+        first.ifPresent(row -> System.out.println("Header/Name based: " + row.field("header2")));
     }
 
     private static void advancedConfiguration() {
@@ -81,7 +81,7 @@ public class CsvReaderExample {
             .errorOnDifferentFieldCount(false)
             .build(data)
             .stream()
-            .map(csvRow -> csvRow.getFields().toString())
+            .map(csvRow -> csvRow.fields().toString())
             .collect(Collectors.joining(" || "));
 
         System.out.println("Parsed via advanced config: " + parsedData);
@@ -90,7 +90,7 @@ public class CsvReaderExample {
     private static void file() {
         try {
             final Path path = Files.createTempFile("fastcsv", ".csv");
-            Files.write(path, "foo,bar\n".getBytes(UTF_8));
+            Files.writeString(path, "foo,bar\n");
 
             try (CsvReader csvReader = CsvReader.builder().build(path, UTF_8)) {
                 csvReader.forEach(System.out::println);

@@ -115,17 +115,17 @@ public final class CsvReader implements Iterable<CsvRow>, Closeable {
         CsvRow csvRow;
         while ((csvRow = rowReader.fetchAndRead()) != null) {
             // skip commented rows
-            if (commentStrategy == CommentStrategy.SKIP && csvRow.isComment()) {
+            if (commentStrategy == CommentStrategy.SKIP && csvRow.comment()) {
                 continue;
             }
 
             // skip empty rows
-            if (csvRow.isEmpty()) {
+            if (csvRow.empty()) {
                 if (skipEmptyRows) {
                     continue;
                 }
             } else if (errorOnDifferentFieldCount) {
-                final int fieldCount = csvRow.getFieldCount();
+                final int fieldCount = csvRow.fields().size();
 
                 // check the field count consistency on every row
                 if (firstLineFieldCount == -1) {
@@ -133,7 +133,7 @@ public final class CsvReader implements Iterable<CsvRow>, Closeable {
                 } else if (fieldCount != firstLineFieldCount) {
                     throw new MalformedCsvException(
                         String.format("Row %d has %d fields, but first row had %d fields",
-                            csvRow.getOriginalLineNumber(), fieldCount, firstLineFieldCount));
+                            csvRow.originalLineNumber(), fieldCount, firstLineFieldCount));
                 }
             }
 

@@ -74,7 +74,7 @@ public class NamedCsvReaderTest {
 
     @Test
     public void getFieldByName() {
-        assertEquals("bar", parse("foo\nbar").iterator().next().getField("foo"));
+        assertEquals("bar", parse("foo\nbar").iterator().next().field("foo"));
     }
 
     @Test
@@ -113,7 +113,7 @@ public class NamedCsvReaderTest {
     @Test
     public void findNonExistingFieldByName() {
         final NoSuchElementException e = assertThrows(NoSuchElementException.class, () ->
-            parse("foo\nfaz").iterator().next().getField("bar"));
+            parse("foo\nfaz").iterator().next().field("bar"));
         assertEquals("No element with name 'bar' found. Valid names are: [foo]",
             e.getMessage());
     }
@@ -124,7 +124,7 @@ public class NamedCsvReaderTest {
             parse("headerA,headerB,headerC\nfieldA,fieldB,fieldC\n").iterator();
 
         assertEquals("NamedCsvRow[originalLineNumber=2, "
-                + "fieldMap={headerA=fieldA, headerB=fieldB, headerC=fieldC}]",
+                + "fields={headerA=fieldA, headerB=fieldB, headerC=fieldC}]",
             csvRow.next().toString());
     }
 
@@ -135,7 +135,7 @@ public class NamedCsvReaderTest {
             .iterator();
 
         assertEquals("{headerA=fieldA, headerB=fieldB, headerC=fieldC}",
-            it.next().getFields().toString());
+            it.next().fields().toString());
     }
 
     // line numbering
@@ -153,24 +153,24 @@ public class NamedCsvReaderTest {
             ).iterator();
 
         NamedCsvRow row = it.next();
-        assertEquals("a", row.getField("h1"));
-        assertEquals(2, row.getOriginalLineNumber());
+        assertEquals("a", row.field("h1"));
+        assertEquals(2, row.originalLineNumber());
 
         row = it.next();
-        assertEquals("b", row.getField("h1"));
-        assertEquals(3, row.getOriginalLineNumber());
+        assertEquals("b", row.field("h1"));
+        assertEquals(3, row.originalLineNumber());
 
         row = it.next();
-        assertEquals("c", row.getField("h1"));
-        assertEquals(4, row.getOriginalLineNumber());
+        assertEquals("c", row.field("h1"));
+        assertEquals(4, row.originalLineNumber());
 
         row = it.next();
-        assertEquals("d", row.getField("h1"));
-        assertEquals(5, row.getOriginalLineNumber());
+        assertEquals("d", row.field("h1"));
+        assertEquals(5, row.originalLineNumber());
 
         row = it.next();
-        assertEquals("e", row.getField("h1"));
-        assertEquals(9, row.getOriginalLineNumber());
+        assertEquals("e", row.field("h1"));
+        assertEquals(9, row.originalLineNumber());
 
         assertFalse(it.hasNext());
     }
@@ -207,7 +207,7 @@ public class NamedCsvReaderTest {
     @Test
     public void noComments() {
         final List<NamedCsvRow> data = readAll("# comment 1\nfieldA");
-        assertEquals("fieldA", data.iterator().next().getField("# comment 1"));
+        assertEquals("fieldA", data.iterator().next().field("# comment 1"));
     }
 
     @Test

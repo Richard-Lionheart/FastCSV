@@ -87,7 +87,7 @@ public class CsvReaderTest {
 
     @Test
     public void immutableResponse() {
-        final List<String> fields = crb.build("foo").iterator().next().getFields();
+        final List<String> fields = crb.build("foo").iterator().next().fields();
         assertThrows(UnsupportedOperationException.class, () -> fields.add("bar"));
     }
 
@@ -113,22 +113,22 @@ public class CsvReaderTest {
         final Iterator<CsvRow> it = crb.build("\n\na").iterator();
 
         CsvRow row = it.next();
-        assertTrue(row.isEmpty());
-        assertEquals(1, row.getFieldCount());
-        assertEquals(1, row.getOriginalLineNumber());
-        assertEquals(Collections.singletonList(""), row.getFields());
+        assertTrue(row.empty());
+        assertEquals(1, row.fields().size());
+        assertEquals(1, row.originalLineNumber());
+        assertEquals(Collections.singletonList(""), row.fields());
 
         row = it.next();
-        assertTrue(row.isEmpty());
-        assertEquals(1, row.getFieldCount());
-        assertEquals(2, row.getOriginalLineNumber());
-        assertEquals(Collections.singletonList(""), row.getFields());
+        assertTrue(row.empty());
+        assertEquals(1, row.fields().size());
+        assertEquals(2, row.originalLineNumber());
+        assertEquals(Collections.singletonList(""), row.fields());
 
         row = it.next();
-        assertFalse(row.isEmpty());
-        assertEquals(1, row.getFieldCount());
-        assertEquals(3, row.getOriginalLineNumber());
-        assertEquals(Collections.singletonList("a"), row.getFields());
+        assertFalse(row.empty());
+        assertEquals(1, row.fields().size());
+        assertEquals(3, row.originalLineNumber());
+        assertEquals(Collections.singletonList("a"), row.fields());
 
         assertFalse(it.hasNext());
     }
@@ -141,12 +141,12 @@ public class CsvReaderTest {
         final Iterator<CsvRow> it = csv.iterator();
 
         CsvRow row = it.next();
-        assertEquals(3, row.getOriginalLineNumber());
-        assertEquals(Collections.singletonList("foo"), row.getFields());
+        assertEquals(3, row.originalLineNumber());
+        assertEquals(Collections.singletonList("foo"), row.fields());
 
         row = it.next();
-        assertEquals(5, row.getOriginalLineNumber());
-        assertEquals(Collections.singletonList("bar"), row.getFields());
+        assertEquals(5, row.originalLineNumber());
+        assertEquals(Collections.singletonList("bar"), row.fields());
     }
 
     // different field count
@@ -180,8 +180,7 @@ public class CsvReaderTest {
     @Test
     @SuppressWarnings("CheckReturnValue")
     public void getNonExistingFieldByIndex() {
-        assertThrows(IndexOutOfBoundsException.class, () ->
-            spotbugs(readSingleRow("foo").getField(1)));
+        assertThrows(IndexOutOfBoundsException.class, () -> spotbugs(readSingleRow("foo").fields().get(1)));
     }
 
     @SuppressWarnings("PMD.UnusedFormalParameter")
@@ -205,24 +204,24 @@ public class CsvReaderTest {
             ).iterator();
 
         CsvRow row = it.next();
-        assertEquals(Collections.singletonList("line 1"), row.getFields());
-        assertEquals(1, row.getOriginalLineNumber());
+        assertEquals(Collections.singletonList("line 1"), row.fields());
+        assertEquals(1, row.originalLineNumber());
 
         row = it.next();
-        assertEquals(Collections.singletonList("line 2"), row.getFields());
-        assertEquals(2, row.getOriginalLineNumber());
+        assertEquals(Collections.singletonList("line 2"), row.fields());
+        assertEquals(2, row.originalLineNumber());
 
         row = it.next();
-        assertEquals(Collections.singletonList("line 3"), row.getFields());
-        assertEquals(3, row.getOriginalLineNumber());
+        assertEquals(Collections.singletonList("line 3"), row.fields());
+        assertEquals(3, row.originalLineNumber());
 
         row = it.next();
-        assertEquals(Collections.singletonList("line 4\rwith\r\nand\n"), row.getFields());
-        assertEquals(4, row.getOriginalLineNumber());
+        assertEquals(Collections.singletonList("line 4\rwith\r\nand\n"), row.fields());
+        assertEquals(4, row.originalLineNumber());
 
         row = it.next();
-        assertEquals(Collections.singletonList("line 9"), row.getFields());
-        assertEquals(9, row.getOriginalLineNumber());
+        assertEquals(Collections.singletonList("line 9"), row.fields());
+        assertEquals(9, row.originalLineNumber());
 
         assertFalse(it.hasNext());
     }
@@ -236,14 +235,14 @@ public class CsvReaderTest {
             .build("#comment \"1\"\na,#b,c").iterator();
 
         CsvRow row = it.next();
-        assertTrue(row.isComment());
-        assertEquals(1, row.getOriginalLineNumber());
-        assertEquals(Collections.singletonList("comment \"1\""), row.getFields());
+        assertTrue(row.comment());
+        assertEquals(1, row.originalLineNumber());
+        assertEquals(Collections.singletonList("comment \"1\""), row.fields());
 
         row = it.next();
-        assertFalse(row.isComment());
-        assertEquals(2, row.getOriginalLineNumber());
-        assertEquals(Arrays.asList("a", "#b", "c"), row.getFields());
+        assertFalse(row.comment());
+        assertEquals(2, row.originalLineNumber());
+        assertEquals(Arrays.asList("a", "#b", "c"), row.fields());
     }
 
     // to string

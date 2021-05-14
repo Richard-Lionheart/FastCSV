@@ -75,8 +75,8 @@ public class CsvWriterExample {
             writer.writeRow("name", "age");
             for (final NamedCsvRow csvRow : reader) {
                 writer.writeRow(
-                    csvRow.getField("firstname") + " " + csvRow.getField("lastname"),
-                    csvRow.getField("age")
+                    csvRow.field("firstname") + " " + csvRow.field("lastname"),
+                    csvRow.field("age")
                 );
             }
         } catch (final IOException e) {

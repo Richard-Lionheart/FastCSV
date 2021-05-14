@@ -1,5 +1,7 @@
 package de.siegmar.fastcsv.reader;
 
+import java.util.List;
+
 final class RowHandler {
 
     private int len;
@@ -41,7 +43,7 @@ final class RowHandler {
         if (idx > 1 || !row[0].isEmpty()) {
             final String[] ret = new String[idx];
             System.arraycopy(row, 0, ret, 0, idx);
-            return new CsvRow(originalLineNumber, ret, commentMode);
+            return new CsvRow(originalLineNumber, List.of(ret), commentMode);
         }
 
         return new CsvRow(originalLineNumber, commentMode);
