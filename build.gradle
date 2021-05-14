@@ -1,11 +1,14 @@
+/*
 buildscript {
     dependencies {
         classpath 'net.sf.proguard:proguard-gradle:6.2.2'
     }
 }
+*/
 
 plugins {
     id 'java-library'
+/*
     id 'maven-publish'
     id 'signing'
     id 'checkstyle'
@@ -14,6 +17,7 @@ plugins {
     id 'com.github.spotbugs' version '4.5.0'
     id 'me.champeau.gradle.jmh' version '0.5.1'
     id 'info.solidsoft.pitest' version '1.5.2'
+*/
 }
 
 group = "de.siegmar"
@@ -21,7 +25,7 @@ version = "2.0.0"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(8)
+        languageVersion = JavaLanguageVersion.of(16)
     }
     withJavadocJar()
     withSourcesJar()
@@ -42,19 +46,20 @@ dependencies {
 
     exampleImplementation sourceSets.main.output
 
-    pitest 'org.pitest:pitest-junit5-plugin:0.12'
+//    pitest 'org.pitest:pitest-junit5-plugin:0.12'
 }
 
+test {
+    useJUnitPlatform()
+    //finalizedBy jacocoTestReport
+}
+
+/*
 tasks.matching { task -> task.name.startsWith('spotbugs') }.forEach {
     it.reports {
         html.enabled = true
         xml.enabled = false
     }
-}
-
-test {
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport
 }
 
 pitest {
@@ -154,3 +159,4 @@ publishing {
 signing {
     sign publishing.publications.mavenJava
 }
+*/
